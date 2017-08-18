@@ -1,46 +1,54 @@
 // Creates an array of the letters from the alphabet.
-// The ".split" will split every character.
-var compChoices = ["abcdefghijklmnopqrstuvwxyz".split("")];
+// The .split() will split every character.
+// Do not add [ ] outside the .split(), otherwise it'll be an array within an array
+var compChoices = "abcdefghijklmnopqrstuvwxyz".split("");
 
-// Created variables to hold the number of wins, losses, guesses left, and the user's guesses so far.
+// Created variables to hold the number of wins, losses, guesses left, the user's guesses so far, and the computer's guesses
 var wins = 0;
 var losses = 0;
-var guessesLeft = 9;
-var guessedLetters = [];
+var guessesLeft = 10;
+var guessesSoFar = [];
+var compGuess = compChoices[Math.floor(Math.random() * compChoices.length)];
+console.log("init comp guess", compGuess);
 
 // Functions
-var updateGuessesLeft = function () {
-    document.querySelector("#guessesleft").innerHTML = "Guesses left: " + guessesLeft;
-}
-var updateGuessesSoFar = function () {
-    document.querySelector("#guessessofar").innerHTML = "Your guesses so far: " + guessesSoFar.join; 
-}
-// Computer generates a random letter
-var updateToGuess = function () {
-    var compGuess = compChoices[Math.floor(Math.random() * compChoices.length)];
-}
 
-var reset = function () {
-    totalGuesses = 9;
-    guessesLeft = 9;
-    guessesdLetters = [];
+// The reset function will reset the game once the user wins or loses, without having to refresh the browser
+function reset() {
+    guessesLeft = 10;
+    guessesSoFar = [];
+    compGuess = compChoices[Math.floor(Math.random() * compChoices.length)];
+    console.log("new comp guess", compGuess);
 }
 
 // This function is run whenever the user presses a key.
-document.onkeypress = function (event) {
+onkeyup = function (event) {
 
-    // Determines which key was pressed.
+    // Determines which key the user pressed.
     var userGuess = event.key;
-    var compGuess = compChoices[Math.floor(Math.random() * compChoices.length)];
-    // This logic determines the outcome of the game (win/losses)
+    console.log(userGuess, compGuess);
+
+    // This logic determines what will happen if the user wins
     if (userGuess === compGuess) {
         wins++; //wins = wins + 1;
+        reset(); // The game will then reset
+
+    // This logic determines what will happen while the user is not guessing correctly
     } else {
-        guessesleft--;
-        var userGuess = String.fromCharCode(event.key).toLowerCase();
-        reset();
+        guessesLeft--;
+        guessesSoFar.push(userGuess);
+
+    // This logic determines what will happen when the user loses    
+        if (guessesLeft === 0) {
+            losses++;
+            reset();
+        }
     }
 
+    // the .querySelector links up to the ID's identified to the HTML page
     document.querySelector("#wins").innerHTML = wins;
     document.querySelector("#losses").innerHTML = losses;
+    document.querySelector("#guessesLeft").innerHTML = guessesLeft;
+    //The .join() method will join all letters guessed from the guessesSoFar array to a string
+    document.querySelector("#guessesSoFar").innerHTML = guessesSoFar.join(", ");
 }
